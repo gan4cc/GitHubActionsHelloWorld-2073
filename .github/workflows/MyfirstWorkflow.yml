@@ -7,7 +7,7 @@ on:
    workflow_dispatch:
       inputs:
         test:
-         description: "its mice to see the desription"
+         description: "its mice to see the desсription"
          required: true
         loglevel:
            description: "Log level"
@@ -36,9 +36,9 @@ jobs:
 
      - name: list files  
        run: |
-         echo"Event name is: ${{ github.event_name }}"
-          echo "This repository ${{ github.repository }} contains  the following files: "
-          tree -a
+         echo "Event name is: ${{ github.event_name }}"
+         echo "This repository ${{ github.repository }} contains  the following files: "
+         tree -a
 
      - name: show inputs
          if:${{ github.event_name == 'workflow_dispatch' }}
