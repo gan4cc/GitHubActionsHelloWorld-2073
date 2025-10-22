@@ -33,7 +33,11 @@ jobs:
      
      - name: Checkout
        uses: actions/checkout@v5.0.0
-     #comment   
      - run: |
            echo "This repository ${{ github.repository }} contains  the following files: "
            tree -a
+           echo "test input value: ${{ inputs.test }}"
+           echo "loglevel input value: ${{ inputs.loglevel }}"
+           echo "testbuild input value: ${{ inputs.testbuild }}"
+            echo "environment input value: ${{ inputs.environment }}"
+
