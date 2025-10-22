@@ -33,7 +33,16 @@ jobs:
      
      - name: Checkout
        uses: actions/checkout@v5.0.0
-     - run: |
+
+     - name: list files  
+       run: |
+         echo"Event name is: ${{ github.event_name }}"
+          echo "This repository ${{ github.repository }} contains  the following files: "
+          tree -a
+
+     - name: show inputs
+         if:${{ github.event_name == 'workflow_dispatch' }}
+       run: |
            echo "This repository ${{ github.repository }} contains  the following files: "
            tree -a
            echo "test input value: ${{ inputs.test }}"
