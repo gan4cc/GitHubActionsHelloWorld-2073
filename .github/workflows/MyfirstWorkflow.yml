@@ -1,11 +1,16 @@
 name: My First Workflow
 
-on:
+on: 
+  push:
+    branches:
+      - main
+      
   workflow_dispatch:
     inputs:
       test:
         description: "It's nice to see this description"
         required: true
+        type: string
       loglevel:
         description: "Log level"
         default: info
@@ -24,7 +29,6 @@ on:
         required: true
   repository_dispatch:
     types: ["coffee", "tea"]
-        
 
 jobs:
   matrix_super_job:
@@ -37,20 +41,24 @@ jobs:
         node_version: [20, 22, 24]
     runs-on: ${{ matrix.os_version }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+        
       - name: Install NodeJS
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node_version }}
+      
 
   MyFirstJob:
     runs-on: ubuntu-latest
     steps:
-      - name: Hello World
-        run: echo "Hello World"
-        working-directory: ./temp
-
       - name: Checkout
         uses: actions/checkout@v5.0.0
+
+      - name: Hello World
+        # 💡 ИСПРАВЛЕНИЕ ОШИБКИ: Удален 'working-directory: ./temp', чтобы избежать сбоя "No such file or directory"
+        run: echo "Hello World"
 
       - name: List files
         run: |
@@ -60,15 +68,17 @@ jobs:
 
       - name: Show inputs
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |    
-          echo "test input value: ${{ inputs.test }}"
-          echo "loglevel input: ${{ inputs.loglevel }}"
-          echo "testbuild input: ${{ inputs.testbuild }}"
-          echo "environment input: ${{ inputs.environment }}"
+        run: |
+          echo "--- Workflow Dispatch Inputs ---"
+          echo "test input value: ${{ github.event.inputs.test }}"
+          echo "loglevel input: ${{ github.event.inputs.loglevel }}"
+          echo "testbuild input: ${{ github.event.inputs.testbuild }}"
+          echo "environment input: ${{ github.event.inputs.environment }}"
 
       - name: Show payload
         if: ${{ github.event_name == 'repository_dispatch' }}
         run: |
+          echo "--- Repository Dispatch Payload ---"
           echo Payload: '${{ toJSON(github.event.client_payload) }}'
 
   MySecondJob:
