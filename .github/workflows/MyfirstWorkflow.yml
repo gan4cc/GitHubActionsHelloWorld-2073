@@ -114,10 +114,10 @@ jobs:
            sleep_time=15
            echo "::add-mask::test_results"
            echo "::add-mask::sleep_time"
-           echo "test_results=$test_results" >> $GITHUB_OUTPUT
-           echo "sleep_time=$sleep_time" >> $GITHUB_OUTPUT
-           echo "TEST_RESULTS=$test_results" >> $GITHUB_ENV
-           echo "SLEEP_TIME=$sleep_time" >> $GITHUB_ENV
+           echo "test_results=$test_results" >> "$GITHUB_OUTPUT"
+           echo "sleep_time=$sleep_time" >> "$GITHUB_OUTPUT"
+           echo "TEST_RESULTS=$test_results" >> "$GITHUB_ENV"
+           echo "SLEEP_TIME=$sleep_time" >> "$GITHUB_ENV"
           env:
             AWS_REGION: us-east-1
 
