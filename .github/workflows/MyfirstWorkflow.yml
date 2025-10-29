@@ -107,8 +107,10 @@ jobs:
   Post:
       runs-on: ubuntu-latest
       steps:
-        - run: echo "Post"
+        - run: echo "Post"; exit 1
+
         - if: success()
           run: echo "Success!"
+
         - if: always()
           run: echo "Always"
