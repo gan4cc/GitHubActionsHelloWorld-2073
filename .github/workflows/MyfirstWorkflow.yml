@@ -110,7 +110,7 @@ jobs:
         - id: test_step
           run: |
            echo "Post"
-           test_results=passed
+           test_results= $((RANDOM))
            sleep_time=15
            echo "::add-mask::test_results"
            echo "::add-mask::sleep_time"
