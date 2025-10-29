@@ -107,7 +107,13 @@ jobs:
   Post:
       runs-on: ubuntu-latest
       steps:
-        - run: echo "Post"; exit 1
+        - run: echo "Post";sleep 30; exit 1
+
+        - if: failure()
+          run: echo "Failure!"
+        
+        - if: cancelled()
+          run: echo "Cancelled!" 
 
         - if: success()
           run: echo "Success!"
