@@ -110,7 +110,9 @@ jobs:
         - run: echo "Post"; exit 1
 
         - if: failure()
-          run: echo "::error file=MyfirstWorkflow.yml,line=102::Failure!"
+          run: |
+           echo "::debug:: Debug message"
+           echo "::error file=MyfirstWorkflow.yml,line=110::Failure!"
         
         - if: cancelled()
           run: echo "Cancelled!" 
