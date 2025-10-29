@@ -103,3 +103,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: "echo Job: ${{ github.job }}"
+
+  Post:
+      runs-on: ubuntu-latest
+      steps:
+        - if: success()
+          run: echo "Success!"
+        - if: always()
+          run: echo "Always"
