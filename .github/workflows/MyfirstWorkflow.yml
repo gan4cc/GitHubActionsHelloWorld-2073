@@ -112,8 +112,8 @@ jobs:
         - if: failure()
           run: |
            echo "::debug:: Debug message"
-           echo "::error file=MyfirstWorkflow.yaml,line=110::Failure!"
-           echo "::warning file=MyfirstWorkflow.yaml,line=110,endLine=116,col=76,endColumn=110::Warning message!"
+           echo "::error file=.github/workflows/MyfirstWorkflow.yaml,line=110::Failure!"
+           echo "::warning file=.github/workflows/MyfirstWorkflow.yaml,line=110,endLine=116,col=76,endColumn=110::Warning message!"
         
         - if: cancelled()
           run: echo "Cancelled!" 
