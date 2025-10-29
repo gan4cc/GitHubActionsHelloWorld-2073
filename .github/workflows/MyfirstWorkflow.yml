@@ -107,7 +107,13 @@ jobs:
   Post:
       runs-on: ubuntu-latest
       steps:
-        - run: echo "Post"; exit 1
+        - id: test_step
+          run: |
+           echo "Post"
+           echo "test_results=passed" >> $GITHUB_OUTPUT
+           echo "sleep_time=15"
+           echo "::add-mask::test_results"
+           echo "::add-mask::sleep_time"
 
         - if: failure()
           run: |
@@ -122,4 +128,7 @@ jobs:
           run: echo "Success!"
 
         - if: always()
-          run: echo "Always"
+          run: |
+           echo "Test Results: ${{ steps.test_step.outputs.test_results }}"
+           sleep ${{ steps.test_step.outputs.sleep_time }}
+           echo "Always"
