@@ -111,7 +111,7 @@ jobs:
           run: |
            echo "Post"
            echo "test_results=passed" >> $GITHUB_OUTPUT
-           echo "sleep_time=15"
+           echo "sleep_time=15" >> $GITHUB_OUTPUT
            echo "::add-mask::test_results"
            echo "::add-mask::sleep_time"
 
