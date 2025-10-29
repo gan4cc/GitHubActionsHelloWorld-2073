@@ -110,10 +110,13 @@ jobs:
         - id: test_step
           run: |
            echo "Post"
-           echo "test_results=passed" >> $GITHUB_OUTPUT
-           echo "sleep_time=15" >> $GITHUB_OUTPUT
+           test_results=passed
+           sleep_time=15
            echo "::add-mask::test_results"
            echo "::add-mask::sleep_time"
+           echo "test_results=$test_results" >> $GITHUB_OUTPUT
+           echo "sleep_time=$sleep_time" >> $GITHUB_OUTPUT
+
 
         - if: failure()
           run: |
