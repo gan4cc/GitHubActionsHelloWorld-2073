@@ -22,7 +22,9 @@ on:
         description: "Env to deploy"
         type: environment
         required: true
-        
+  # FIX: Added repository_dispatch trigger to enable the use of github.event.client_payload
+  repository_dispatch:
+
 env:
   TEST_ACROSS_JOBS: test
 
@@ -69,6 +71,7 @@ jobs:
       - name: Show payload
         if: ${{ github.event_name == 'repository_dispatch' }}
         run: |
+          # This context access is now valid because repository_dispatch is an allowed trigger
           echo Payload: '${{ toJSON(github.event.client_payload) }}'
 
   MySecondJob:
