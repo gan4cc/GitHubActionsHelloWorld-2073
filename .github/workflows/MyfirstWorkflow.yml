@@ -22,7 +22,7 @@ on:
         description: "Env to deploy"
         type: environment
         required: true
-  # FIX: Added repository_dispatch trigger to enable the use of github.event.client_payload
+
   repository_dispatch:
 
 env:
