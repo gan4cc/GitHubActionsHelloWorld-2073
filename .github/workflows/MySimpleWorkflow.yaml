@@ -1,0 +1,15 @@
+name: My Simple Workflow
+
+on:
+  repository_dispatch:
+    types: ["coffee", "tea"]
+        
+jobs:
+  MySimpleJob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World
+        run: |
+          echo "Hello World"
+          echo "### Hello World! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "<h1>Test heading</h1>" >> $GITHUB_STEP_SUMMARY

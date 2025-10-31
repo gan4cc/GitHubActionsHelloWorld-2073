@@ -1,16 +1,11 @@
 name: My First Workflow
 
-on: 
-  push:
-    branches:
-      - main
-      
+on:
   workflow_dispatch:
     inputs:
       test:
         description: "It's nice to see this description"
         required: true
-        type: string
       loglevel:
         description: "Log level"
         default: info
@@ -27,8 +22,9 @@ on:
         description: "Env to deploy"
         type: environment
         required: true
-  repository_dispatch:
-    types: ["coffee", "tea"]
+        
+env:
+  TEST_ACROSS_JOBS: test
 
 jobs:
   matrix_super_job:
@@ -37,28 +33,24 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        os_version: [macos-latest, ubuntu-latest]
+        os_version: [ubuntu-latest]
         node_version: [20, 22, 24]
     runs-on: ${{ matrix.os_version }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5.0.0
-        
       - name: Install NodeJS
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node_version }}
-      
 
   MyFirstJob:
     runs-on: ubuntu-latest
     steps:
+      - name: Hello World
+        run: |
+          echo "Hello World"
+
       - name: Checkout
         uses: actions/checkout@v5.0.0
-
-      - name: Hello World
-        # 💡 ИСПРАВЛЕНИЕ ОШИБКИ: Удален 'working-directory: ./temp', чтобы избежать сбоя "No such file or directory"
-        run: echo "Hello World"
 
       - name: List files
         run: |
@@ -68,17 +60,15 @@ jobs:
 
       - name: Show inputs
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        run: |
-          echo "--- Workflow Dispatch Inputs ---"
-          echo "test input value: ${{ github.event.inputs.test }}"
-          echo "loglevel input: ${{ github.event.inputs.loglevel }}"
-          echo "testbuild input: ${{ github.event.inputs.testbuild }}"
-          echo "environment input: ${{ github.event.inputs.environment }}"
+        run: |    
+          echo "test input value: ${{ inputs.test }}"
+          echo "loglevel input: ${{ inputs.loglevel }}"
+          echo "testbuild input: ${{ inputs.testbuild }}"
+          echo "environment input: ${{ inputs.environment }}"
 
       - name: Show payload
         if: ${{ github.event_name == 'repository_dispatch' }}
         run: |
-          echo "--- Repository Dispatch Payload ---"
           echo Payload: '${{ toJSON(github.event.client_payload) }}'
 
   MySecondJob:
@@ -105,37 +95,36 @@ jobs:
       - run: "echo Job: ${{ github.job }}"
 
   Post:
-      runs-on: ubuntu-latest
-      steps:
-        - id: test_step
-          run: |
-           echo "Post"
-           test_results=$((RANDOM))
-           sleep_time=15
-           echo "::add-mask::$test_results"
-           echo "::add-mask::$sleep_time"
-           echo "test_results=$test_results" >> "$GITHUB_OUTPUT"
-           echo "sleep_time=$sleep_time" >> "$GITHUB_OUTPUT"
-           echo "TEST_RESULTS=$test_results" >> "$GITHUB_ENV"
-           echo "SLEEP_TIME=$sleep_time" >> "$GITHUB_ENV"
-          env:
-            AWS_REGION: us-east-1
+    runs-on: ubuntu-latest
+    steps:
+      - id: test_step
+        run: | 
+          echo "Post"
+          test_results=$((RANDOM))
+          sleep_time=1
+          echo "::add-mask::$test_results"
+          echo "::add-mask::$sleep_time"
+          echo "test_results=$test_results" >> "$GITHUB_OUTPUT"
+          echo "sleep_time=$sleep_time" >> "$GITHUB_OUTPUT"
+          echo "TEST_RESULTS=$test_results" >> "$GITHUB_ENV"
+          echo "SLEEP_TIME=$sleep_time" >> "$GITHUB_ENV"
+        env:
+          AWS_REGION: us-east-1
 
+      - if: failure()
+        run: |
+          echo "::debug::Debug message" 
+          echo "::error file=.github/workflows/MyFirstWorkflow.yml,line=99::Failed!"
+          echo "::warning file=.github/workflows/MyFirstWorkflow.yml,line=99,endLine=105,col=76,endColumn=111,title=warning_title::warning message"
 
-        - if: failure()
-          run: |
-           echo "::debug:: Debug message"
-           echo "::error file=.github/workflows/MyfirstWorkflow.yaml,line=110::Failure!"
-           echo "::warning file=.github/workflows/MyfirstWorkflow.yaml,line=110,endLine=116,col=76,endColumn=110::Warning message!"
-        
-        - if: cancelled()
-          run: echo "Cancelled!" 
+      - if: cancelled()
+        run: echo "Cancelled" 
 
-        - if: success()
-          run: echo "Success!"
+      - if: success()
+        run: echo "Success!"
 
-        - if: always()
-          run: |
-           echo "Test Results: ${{ steps.test_step.outputs.test_results }}"
-           sleep ${{ steps.test_step.outputs.sleep_time }}
-           echo "Always"
+      - if: always()
+        run: |
+          echo "Test results: ${{ steps.test_step.outputs.test_results }}"
+          sleep ${{ steps.test_step.outputs.sleep_time }}
+          echo "Always"
